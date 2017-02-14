@@ -1,0 +1,22 @@
+﻿@model OfferViewModel
+
+@{
+    ViewData["Title"] = "Offer Detail";
+}
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_OfferScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+<form asp-controller="Offer" asp-action="Detail" method="post" class="form-horizontal" role="form">
+    <h4>Offer detail</h4>
+    <hr />
+    @{ await Html.RenderPartialAsync("_OfferPartial", @Model); }
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+        </div>
+    </div>
+</form>
+<hr />
+@await Html.PartialAsync("~/Views/Association/_Associations.cshtml", @Model.AllAssociations)

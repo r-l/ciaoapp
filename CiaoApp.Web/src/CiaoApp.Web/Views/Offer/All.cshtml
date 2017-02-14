@@ -1,0 +1,41 @@
+﻿@model AllOffersViewModel
+@{
+    ViewData["Title"] = "All Offers";
+}
+
+<div class="jumbotron">
+    <h1>This view lists all of your offers.</h1>
+</div>
+<button type="button" class="btn btn-primary btn-block" onclick="location.href='@Url.Action("New", "Offer")'">New Offer</button>
+<hr />
+
+<div class="panel-group" id="accordion">
+    @foreach (var offer in Model.AllOffers.Select((value, i) => new { i, value }))
+    {
+        <div class="panel panel-success">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapse@(offer.i)">
+                <h4 class="panel-title">
+                    <span>
+                        @if (offer.value.Product.Length > 30)
+                        {
+                            @offer.value.Product.Substring(0, 30)
+                            @:...
+
+                        }
+                        else
+                        {
+                            @offer.value.Product
+                        }
+                    </span>
+                </h4>
+            </div>
+            <div id="collapse@(offer.i)" class="panel-collapse collapse @(offer.i == 0 ? "in" : null)">
+
+                <div class="panel-body">
+                    @offer.value.Product
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

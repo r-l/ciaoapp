@@ -1,0 +1,26 @@
+﻿@model NewOfferViewModel
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div class="form-group">
+    <label asp-for="TargetType" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(model => model.TargetType, Model.TargetTypes, null, new { id = "targetTypes", @class = "form-control", data_style = "btn-inverse" })
+    </div>
+</div>
+<div id="toggableGroup" class="form-group" style="display: none">
+    <label asp-for="TargetContactGroupName" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+        <input asp-for="TargetContactGroupName" id="targetContactGroupTxt" class="form-control" />
+        <input asp-for="TargetContactGroupId" type="hidden" id="targetContactGroupId" name="targetContactGroupId" />
+        <span asp-validation-for="TargetContactGroupName" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label asp-for="Product" class="col-md-2 control-label"></label>
+    <div class="col-md-10">
+        <textarea asp-for="Product" rows="8" class="form-control"></textarea>
+        <span asp-validation-for="Product" class="text-danger"></span>
+    </div>
+</div>

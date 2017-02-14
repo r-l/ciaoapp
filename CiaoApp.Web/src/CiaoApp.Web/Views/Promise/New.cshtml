@@ -1,0 +1,99 @@
+﻿@model NewRequestViewModel
+@{
+    ViewData["Title"] = "New Request";
+}
+@section Scripts {
+    <script type="text/javascript">
+        var toggleTermPicker = function () {
+            if ($('#termTypes option:selected').val() == "ASAP") {
+                $('#toggableGroup').hide();
+            }
+            else {
+                $('#toggableGroup').show();
+            }
+        }
+        $(document).ready(function () {
+            toggleTermPicker();
+            $('#termTypes').change(toggleTermPicker);
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#executorTxt").autocomplete({
+                source: function (request, response) {
+                    var prefix = request.term;
+                    $.ajax({
+                        url: '/api/People/GetContacts',
+                        data: "prefix=" + prefix,
+                        dataType: "json",
+                        type: "GET",                        
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        },
+                        failure: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#executorId").val(i.item.id);
+                },
+                minLength: 1
+            });
+        });
+    </script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+
+
+<form asp-controller="Promise" asp-action="New" method="post" class="form-horizontal" role="form">
+    <h4>Create a new Request.</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Executor" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Executor" id="executorTxt" class="form-control" />
+            <input asp-for="ExecutorId" type="hidden" id="executorId" name="executorId" />
+            <span asp-validation-for="Executor" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <textarea asp-for="Product" rows="8" class="form-control"></textarea>
+            <span asp-validation-for="Product" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="TermType" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.TermType, Model.TermTypes, null, new { id = "termTypes", @class = "form-control", data_style = "btn-inverse" })
+        </div>
+    </div>
+
+    <div id="toggableGroup" class="form-group" style="display: none">
+        <label asp-for="Term" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <div class="input-group date datetimepicker">
+                <input asp-for="Term" class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <span asp-validation-for="Term" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-primary btn-block">Request</button>
+        </div>
+    </div>
+</form>

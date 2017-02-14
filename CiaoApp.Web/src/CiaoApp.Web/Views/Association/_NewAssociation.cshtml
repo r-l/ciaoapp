@@ -1,0 +1,22 @@
+﻿@model NewAssociationViewModel
+@using CiaoApp.Web.ViewModels.Associations;
+@using CiaoApp.Web.Models.Promises.Associations;
+ 
+    
+<form asp-controller="@(Model.Context == AssociationContext.Promise ? "Promise" : "Offer")"  asp-action="AddNewAssociation" method="post" role="form">
+    <div class="input-group">        
+        <input type="hidden" asp-for="CreatingPromiseId" />
+        <div class="form-group">            
+            <div class="col-md-10">
+                <input type="text" id="promiseSearcher" class="form-control" />
+                <input type="hidden" asp-for="TargetPromiseId" id="targetPromiseId"/>
+            </div>
+        </div>
+        
+        <input type="hidden" asp-for="Type" value="@(AssociationType.IsAssociatedWith)" />
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-warning btn-flat">Associate</button>
+        </span>
+    </div>
+</form>
+

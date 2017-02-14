@@ -1,0 +1,186 @@
+﻿@model PromiseDetailViewModel
+@{
+    ViewData["Title"] = "Detail";
+}
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("#promiseSearcher").autocomplete({
+                source: function (request, response) {
+                    var prefix = request.term;
+                    $.ajax({
+                        url: '/api/Promises/SearchPromises',
+                        data: "prefix=" + prefix,
+                        dataType: "json",
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        },
+                        failure: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#targetPromiseId").val(i.item.id);
+                },
+                minLength: 1
+            });
+        });
+    </script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+<h4>Details of the Promise @Model.Id</h4>
+<hr />
+<h5>Promise state is @Model.CurrentStatus</h5>
+<div class="form-horizontal">
+    <div class="form-group">
+
+        <label class="col-md-2 control-label" for="who">Requested by</label>
+
+        <div class="col-md-10">
+            <div class="panel panel-default">
+
+                <div id="who" class="panel-heading">
+                    @Model.InitiatorName
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="what">What is required</label>
+
+        <div id="what" class="col-md-10 text-justify">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @Model.Product
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="what">When is it required</label>
+
+        <div id="what" class="col-md-10 text-justify">
+            <div class="panel-body">
+                @Model.TermType
+                @if (Model.TermType != CiaoApp.Web.Models.Promises.TermType.ASAP)
+                {
+                    <span>@Model.Term.ToString()</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <form asp-controller="Promise" asp-action="Execute" method="post" role="form">
+        <input type=hidden name="id" value=@Model.Id />
+        @if (Model.InitiatorActions.Count > 0)
+        {
+            <span>As Initiator, you can:</span>
+            <div class="form-group">
+                @foreach (var action in Model.InitiatorActions.OrderByDescending(a => a.DisplayPriority))
+                {
+                    <div class="col-md-3 pull-right">
+                        <button id="ActionButton" + @action.Type type="submit" class="btn @action.ButtonClass btn-block" name="actionName" value=@action.Type>
+                            <span class="glyphicon @action.GlyphiconName"></span>
+                            @action.Label
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+
+
+        @if (Model.ExecutorActions.Count > 0)
+        {
+            <span>As Executor, you can:</span>
+            <div class="form-group">
+                @foreach (var action in Model.ExecutorActions.OrderByDescending(a => a.DisplayPriority))
+                {
+                    <div class="col-md-3 pull-right">
+                        <button id="ActionButton" + @action.Type type="submit" class="btn @action.ButtonClass btn-block" name="actionName" value=@action.Type>
+                            <span class="glyphicon @action.GlyphiconName"></span>
+                            @action.Label
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+    </form>
+
+
+</div>
+<hr />
+
+<div class="box direct-chat direct-chat-warning">
+    <div class="box-header with-border">
+        <h3>Discussion</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    @if (Model.Messages.Count > 0)
+    {
+        <div class="box-body box-info">
+            <!-- Conversations are loaded here -->
+            <div class="direct-chat-messages">
+
+
+                @foreach (var message in Model.Messages.OrderByDescending(message => message.CreatedOn))
+                {
+
+                    <div class="direct-chat-msg">
+                        <div class="direct-chat-info clearfix">
+                            <span class="direct-chat-name @(message.IsAuthorCurrentUser ? "pull-left" : "pull-right")">@message.AuthorName</span>
+                            <span class="direct-chat-timestamp @(!message.IsAuthorCurrentUser ? "pull-left" : "pull-right")">@message.CreatedOn</span>
+                        </div>
+                        <!-- /.direct-chat-info -->
+                        <img class="direct-chat-img" src="~/lib/admin-lte/dist/img/avatar.png" alt="message user image"><!-- /.direct-chat-img -->
+                        <div class="direct-chat-text">
+                            @message.Text
+                        </div>
+                        <!-- /.direct-chat-text -->
+                    </div>
+
+
+
+                }
+            </div>
+        </div>
+    }
+    <div class="box-footer">
+        <form asp-controller="Promise" asp-action="AddNewMessage" method="post" role="form">
+            <div class="input-group">
+                <input type="text" name="message" placeholder="Type Message ..." class="form-control">
+                <input type="hidden" asp-for="Id" />
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-warning btn-flat">Send</button>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@await Html.PartialAsync("~/Views/Association/_Associations.cshtml", @Model.AllAssociations)

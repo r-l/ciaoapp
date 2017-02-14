@@ -1,0 +1,49 @@
+@model OfferedViewModel
+
+@{
+    ViewData["Title"] = "Offered by";
+}
+
+@if (Model.Offers.Count < 1)
+{
+    <h2>@Model.OffererName has no offers for you :-(</h2>
+}
+else
+{
+    <h2>@Model.OffererName has following offers for you:</h2>
+    <hr />
+
+    <div class="panel-group" id="accordion">
+        @foreach (var offer in Model.Offers.Select((value, i) => new { i, value }))
+        {
+            <div class="panel panel-success">
+                <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapse@(offer.i)">
+                    <h4 class="panel-title">
+                        <span>
+                            @if (offer.value.Product.Length > 30)
+                            {
+                                @offer.value.Product.Substring(0, 30)
+                                @:...
+
+                            }
+                            else
+                            {
+                                @offer.value.Product
+                            }
+                        </span>
+                    </h4>
+                </div>
+                <div id="collapse@(offer.i)" class="panel-collapse collapse @(offer.i == 0 ? "in" : null)">
+
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-10">@offer.value.Product</div>
+                            <div class="col-md-2"><a asp-controller="Promise" asp-action="FromOffer" asp-route-id=@offer.value.Id class="btn btn-link"><span class="glyphicon glyphicon-ok-circle"></span> Take offer</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+

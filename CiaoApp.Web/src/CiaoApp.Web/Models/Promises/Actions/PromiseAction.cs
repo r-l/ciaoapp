@@ -1,0 +1,25 @@
+﻿namespace CiaoApp.Web.Models.Promises.Actions
+{
+    public class PromiseAction : TransactionActionBase
+    {
+        public override ActorRole GetActionActorRole()
+        {
+            return ActorRole.Executor;
+        }
+
+        public override string GetActionName()
+        {
+            return Resources.Texts.Actions.PromiseAction;
+        }
+
+        public override bool IsActorEligible()
+        {
+            return CheckEligibility(TransactionStatus.Requested, ActorRole.Executor);
+        }
+
+        protected override void ActionLogic()
+        {
+            NewState(TransactionStatus.Promised);
+        }
+    }
+}

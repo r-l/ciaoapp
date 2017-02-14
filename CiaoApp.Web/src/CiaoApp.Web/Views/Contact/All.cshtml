@@ -1,0 +1,55 @@
+﻿@model AllContactGroupsViewModel
+@{
+    ViewData["Title"] = "All Groups";
+}
+<div class="container">
+    <div class="jumbotron">
+        <h1>Your contacts and groups</h1>
+    </div>
+    <div class="row" style="display:flex; flex-wrap: wrap;">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary btn-block" onclick="location.href='@Url.Action("NewContact", "Contact")'">Add a new Contact</button>
+        </div>
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary btn-block" onclick="location.href='@Url.Action("NewContactGroup", "Contact")'">Add a new Group</button>
+        </div>
+    </div>
+    <hr />
+    <div class="panel-group" id="accordion">
+        @foreach (var group in Model.AllContactGroups.Select((value, i) => new { i, value }))
+            {
+            <div class="panel panel-info">
+                <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapse@(group.i)">
+                    <h4 class="panel-title">
+                        @group.value.Name (@group.value.Contacts.ToArray().Length)
+                    </h4>
+                </div>
+                <div id="collapse@(group.i)" class="panel-collapse collapse @(group.i == 0 ? "in" : null)">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tbody>
+                                @foreach (var contact in @group.value.Contacts.Select((value, i) => new { i, value }))
+                                {
+                                    <tr>
+                                        <th><h5>@contact.value.Nickname</h5></th>
+                                        <th class="pull-right">
+                                            @if (!contact.value.IsVirtual)
+                                            {
+                                                <a class="btn btn-info btn-sm" asp-controller="Offer" asp-action="OfferedBy" asp-route-id=@contact.value.Id>
+                                                    <span class="glyphicon glyphicon-user" />
+                                                    Offers
+                                                </a>
+                                            }
+                                        </th>
+                                        <!--<th><span class="glyphicon glyphicon-trash" /></th>-->
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

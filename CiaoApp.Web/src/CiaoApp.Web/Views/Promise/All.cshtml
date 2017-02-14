@@ -1,0 +1,52 @@
+﻿@model AllPromisesViewModel
+@{
+    ViewData["Title"] = "All Promises";
+}
+
+<div class="content">
+    <h1>Your promises</h1>
+
+    <button type="button" class="btn btn-primary btn-block" onclick="location.href='@Url.Action("New", "Promise")'">New Request</button>
+    <hr />
+
+    <ul class="timeline">
+
+        @foreach (var groups in Model.AllPromises.OrderBy(prom => prom.Term).GroupBy(prom => prom.Term.Value.Date))
+        {
+            <li class="time-label">
+                <span class="bg-red">
+                    @groups.Key.Day.@groups.Key.Month.@groups.Key.Year
+                </span>
+            </li>
+            @foreach (var promise in groups)
+            {
+                <li>
+                    <!-- timeline icon -->
+                    <i class="fa fa-envelope bg-blue"></i>
+                    <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i>@promise.Term.Value.TimeOfDay</span>
+
+                        <h3 class="timeline-header"><a href="#">From: @promise.InitiatorName</a> ...</h3>
+
+                        <div class="timeline-body">
+                            @promise.Product
+                        </div>
+
+                        <div class="timeline-footer">
+                            <a class="btn btn-primary btn-xs">...</a>
+                        </div>
+                    </div>
+                </li>
+
+            }
+        }
+        <li>
+            <i class="fa fa-clock-o bg-gray"></i>
+        </li>
+    </ul>
+
+
+
+
+
+</div>

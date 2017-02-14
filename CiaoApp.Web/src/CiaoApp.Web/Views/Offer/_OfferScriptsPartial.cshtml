@@ -1,0 +1,47 @@
+﻿<script type="text/javascript">
+        var toggleTermPicker = function () {
+            if ($('#targetTypes option:selected').val() == "SelectedContactGroup") {
+                $('#toggableGroup').show();
+            }
+            else {
+                $('#toggableGroup').hide();
+            }
+        }
+        $(document).ready(function () {
+            toggleTermPicker();
+            $('#targetTypes').change(toggleTermPicker);
+        });
+</script>
+<script type="text/javascript">
+        $(function () {
+            $("#targetContactGroupTxt").autocomplete({
+                source: function (request, response) {
+                    var prefix = request.term;
+                    $.ajax({
+                        url: '/api/Contacts/GetContactGroups',
+                        data: "prefix="+prefix,
+                        dataType: "json",
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        },
+                        failure: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#targetContactGroupId").val(i.item.id);
+                },
+                minLength: 0
+            }).focus(function(){
+                $(this).autocomplete("search", $(this).val())
+            });
+        });
+</script>

@@ -1,0 +1,29 @@
+﻿@model AllAssociationsViewModel
+
+<h3>Related promises</h3>
+@if (Model.AllAssociations.Count > 0)
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <tbody>
+                @foreach (var association in Model.AllAssociations)
+                {
+                    <tr>
+                        <td>@association.Kind</td>
+                        <td>@association.Type</td>
+                        <td>Promise @association.TargetPromise.Id</td>
+                        <td>@association.TargetPromise.Product.Substring(0, (association.TargetPromise.Product.Length > 15 ? 15 : association.TargetPromise.Product.Length))</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    @:There are no related promises.
+}
+
+
+@await Html.PartialAsync("~/Views/Association/_NewAssociation.cshtml", @Model.NewAssociation)

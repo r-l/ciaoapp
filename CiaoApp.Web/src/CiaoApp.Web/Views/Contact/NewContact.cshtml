@@ -1,0 +1,73 @@
+﻿@model ContactViewModel
+@{
+    ViewData["Title"] = "New Contact";
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("#actorTxt").autocomplete({
+                source: function (request, response) {
+                    var prefix = request.term;
+                    $.ajax({
+                        url: '/api/People/GetContacts',
+                        data: JSON.stringify(prefix),
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        },
+                        failure: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#actorId").val(i.item.id);
+                    $("#Nickname").val(i.item.label);
+                },
+                minLength: 1
+            });
+        });
+    </script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+<form asp-controller="Contact" asp-action="NewContact" method="post" class="form-horizontal" role="form">
+    <h4>Create a new Contact.</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="IsVirtual" class="col-md-4 control-label"></label>
+        <div class="col-md-1">
+            <input asp-for="IsVirtual" class="form-control checkbox" data-toggle="collapse" data-target="#realActor">
+        </div>
+    </div>
+    <div class="collapse in" id="realActor">
+        <div class="form-group">
+            <label asp-for="ActorName" class="col-md-4 control-label"></label>
+            <div class="col-md-8">
+                <input asp-for="ActorName" id="actorTxt" class="form-control" />
+                <input asp-for="ActorId" id="actorId" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Nickname" class="col-md-4 control-label"></label>
+        <div class="col-md-8">
+            <input asp-for="Nickname" class="form-control">
+            <span asp-validation-for="Nickname" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-block">Create</button>
+        </div>
+    </div>
+</form>
