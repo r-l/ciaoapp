@@ -4,7 +4,7 @@
 }
 
 <div class="jumbotron">
-    <h1>This view lists all of your offers.</h1>
+    <h3>Your offers:</h3>
 </div>
 <button type="button" class="btn btn-primary btn-block" onclick="location.href='@Url.Action("New", "Offer")'">New Offer</button>
 <hr />
@@ -30,12 +30,14 @@
                 </h4>
             </div>
             <div id="collapse@(offer.i)" class="panel-collapse collapse @(offer.i == 0 ? "in" : null)">
-
                 <div class="panel-body">
-                    @offer.value.Product
+                    <div class="row">
+                        <div class="col-md-10">@offer.value.Product</div>
+                        <div class="col-md-2"><a asp-controller="Offer" asp-action="Detail" asp-route-id=@offer.value.Id class="btn btn-link"><span class="glyphicon glyphicon-modify"></span> Edit offer</a></div>
+                    </div>
                 </div>
+
             </div>
         </div>
     }
 </div>
-

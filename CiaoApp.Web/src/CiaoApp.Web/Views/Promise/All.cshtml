@@ -11,33 +11,34 @@
 
     <ul class="timeline">
 
-        @foreach (var groups in Model.AllPromises.OrderBy(prom => prom.Term).GroupBy(prom => prom.Term.Value.Date))
+        @{var promises = Model.AllPromises.OrderBy(prom => prom.Term).Where(prom => prom.Term.Value.Date <= DateTime.Now.Date);
+            if (promises.Count() > 0)
+            {
+                <li class="time-label">
+                    <span class="bg-red">
+                        @DateTime.Now.Day.@DateTime.Now.Month.@DateTime.Now.Year
+                    </span>
+                </li>
+
+                {
+                    @foreach (var promise in promises)
+                    {
+                        @await Html.PartialAsync("_PromiseSimplePartial", promise)
+                    }
+                }
+            }
+        }
+
+        @foreach (var groups in Model.AllPromises.OrderBy(prom => prom.Term).Where(prom => prom.Term.Value.Date > DateTime.Now.Date).GroupBy(prom => prom.Term.Value.Date))
         {
             <li class="time-label">
-                <span class="bg-red">
+                <span class="bg-aqua">
                     @groups.Key.Day.@groups.Key.Month.@groups.Key.Year
                 </span>
             </li>
             @foreach (var promise in groups)
             {
-                <li>
-                    <!-- timeline icon -->
-                    <i class="fa fa-envelope bg-blue"></i>
-                    <div class="timeline-item">
-                        <span class="time"><i class="fa fa-clock-o"></i>@promise.Term.Value.TimeOfDay</span>
-
-                        <h3 class="timeline-header"><a href="#">From: @promise.InitiatorName</a> ...</h3>
-
-                        <div class="timeline-body">
-                            @promise.Product
-                        </div>
-
-                        <div class="timeline-footer">
-                            <a class="btn btn-primary btn-xs">...</a>
-                        </div>
-                    </div>
-                </li>
-
+                @await Html.PartialAsync("_PromiseSimplePartial", promise)
             }
         }
         <li>

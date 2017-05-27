@@ -27,9 +27,9 @@ namespace CiaoApp.Web.Data.DataAccess
             return _dbContext.Offer.Where(offer => (offer.Offerer.Id == offerer.Id) && ((offer.TargetType == OfferTargetType.Public) || (offer.SelectedContactGroup.Contacts.Where(contact => contact.ActorId == target.Id).Count()>0))).Include(offer => offer.Offerer).ToList();
         }
 
-        public bool IsOfferedToActor(Offer offer, Actor target)
+        public bool IsOfferedToActor(Offer offer, Actor target, bool allowHidden)
         {
-            if (offer.TargetType == OfferTargetType.Public)
+            if (offer.TargetType == OfferTargetType.Public || (allowHidden && offer.TargetType == OfferTargetType.Hidden))
             {
                 return true;
             }
@@ -42,7 +42,7 @@ namespace CiaoApp.Web.Data.DataAccess
 
         public Offer LoadOfferById(int id)
         {
-            return _dbContext.Offer.Where(offer => (offer.Id == id)).Include(offer => offer.Offerer).FirstOrDefault();
+            return _dbContext.Offer.Where(offer => (offer.Id == id)).Include(offer => offer.Offerer).Include(offer => offer.SelectedContactGroup).Include(prm => prm.ParentAssociations).ThenInclude(asoc => asoc.Parent).Include(prm => prm.ChildAssociations).ThenInclude(asoc => asoc.Child).FirstOrDefault();
         }
 
         public Offer SaveOffer(Offer offer)
@@ -50,6 +50,12 @@ namespace CiaoApp.Web.Data.DataAccess
             _dbContext.Entry(offer).State = offer.Id == 0 ? EntityState.Added : EntityState.Modified;            
             _dbContext.SaveChanges();
             return offer;
+        }
+
+        public IList<Offer> SearchAllActorOffers(Actor actor, string prefix)
+        {
+            var offers = _dbContext.Offer.Where(offer => (offer.Offerer.Id == actor.Id)).Include(offer => offer.Offerer);
+            return offers.Where(offer => ("Offer " + offer.Id + " " + offer.Product).ToLower().Contains(prefix.ToLower())).ToList();
         }
     }
 }

@@ -16,6 +16,6 @@ namespace CiaoApp.Web.Models.Promises
         [InverseProperty("Parent")]
         public virtual ICollection<Association> ChildAssociations { get; set; }
         public string Product { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; }
+        public virtual ICollection<TagAssociation> Tags { get; set; }
     }
 }

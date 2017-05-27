@@ -34,7 +34,17 @@ namespace CiaoApp.Web.Models.Promises
         public PromiseState GetCurrentState()
         {
             return States.LastOrDefault();
-        }     
+        }
+
+        public int? GetOriginId()
+        {
+            var origin = ParentAssociations.FirstOrDefault(assoc => assoc.Type == Associations.AssociationType.IsOriginOf);
+            if (origin == null) {
+                return null;
+            } else {
+                return origin.Parent.Id;
+            } 
+        }
 
     }
 }

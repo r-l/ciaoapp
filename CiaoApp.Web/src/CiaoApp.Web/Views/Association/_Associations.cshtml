@@ -1,6 +1,8 @@
 ﻿@model AllAssociationsViewModel
+@using CiaoApp.Web.Extensions.Common
+@using CiaoApp.Web.Models.Promises
 
-<h3>Related promises</h3>
+<h3>Related commitments</h3>
 @if (Model.AllAssociations.Count > 0)
 {
     <div class="table-responsive">
@@ -9,12 +11,23 @@
                 @foreach (var association in Model.AllAssociations)
                 {
                     <tr>
-                        <td>@association.Kind</td>
-                        <td>@association.Type</td>
-                        <td>Promise @association.TargetPromise.Id</td>
-                        <td>@association.TargetPromise.Product.Substring(0, (association.TargetPromise.Product.Length > 15 ? 15 : association.TargetPromise.Product.Length))</td>
+                        <td>
+                        @if (association.Kind == AssociationKind.Child)
+                        {
+                            @:This commitment @association.Type.GetDisplayName().ToLower() [@(association.TargetPromise.GetType() == typeof(CiaoApp.Web.Models.Promises.Offer) ? "offer" : "promise") @association.TargetPromise.Id]
+                        }
+                        else
+                        {
+                            @:[@(association.TargetPromise.GetType() == typeof(CiaoApp.Web.Models.Promises.Offer) ? "Offer" : "Promise") @association.TargetPromise.Id] @association.Type.GetDisplayName().ToLower() this commitment
+                        } 
+                        @if (association.TargetState != null)
+                        {
+                            @:reaches state "@association.TargetState.GetValueOrDefault().GetDisplayName()"
+                        }
+                        </td>
+                        <td>@(association.TargetPromise.GetType() == typeof(CiaoApp.Web.Models.Promises.Offer) ? "Offer" : "Promise") @association.TargetPromise.Id's product: @association.TargetPromise.Product.Substring(0, (association.TargetPromise.Product.Length > 30 ? 30 : association.TargetPromise.Product.Length))</td>
+                        
                     </tr>
-
                 }
             </tbody>
         </table>
@@ -22,7 +35,7 @@
 }
 else
 {
-    @:There are no related promises.
+    @:There are no related commitments.
 }
 
 

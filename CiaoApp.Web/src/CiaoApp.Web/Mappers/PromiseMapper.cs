@@ -41,7 +41,7 @@ namespace CiaoApp.Web.Mappers
                 InitiatorActions = initiatorActions,
                 ExecutorActions = executorActions,
                 Messages = simpleMessages,
-                AllAssociations = new AllAssociationsViewModel { AllAssociations = associations, NewAssociation = new NewAssociationViewModel { CreatingPromiseId = promise.Id, Context = AssociationContext.Promise} }
+                AllAssociations = new AllAssociationsViewModel { AllAssociations = associations, NewAssociation = new NewAssociationViewModel(AssociationContext.Promise) { CreatingPromiseId = promise.Id, Context = AssociationContext.Promise} }
             };
         }
 

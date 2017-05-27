@@ -69,7 +69,7 @@ namespace CiaoApp.Web.Data.DataAccess
         public IList<Actor> GetUserContacts(int userId)
         {
             // UNDONE This is shit
-            return _dbContext.Actor.Select(act => act).ToList();
+            return _dbContext.Actor.Where(act => act.Id != userId).ToList();
         }
 
         public IList<Actor> GetUserContacts(int userId, string prefix)
@@ -95,5 +95,14 @@ namespace CiaoApp.Web.Data.DataAccess
             return contactGroup;
         }
 
+        public IList<Actor> GetAllPeople(int userId)
+        {
+            return _dbContext.Actor.Where(act => act.Id != userId).ToList();
+        }
+
+        public IList<Actor> GetAllPeople(int userId, string prefix)
+        {
+            return _dbContext.Actor.Where(act => act.Id != userId && (act.Email.Contains(prefix) || act.FirstName.Contains(prefix) || act.LastName.Contains(prefix))).ToList();
+        }
     }
 }

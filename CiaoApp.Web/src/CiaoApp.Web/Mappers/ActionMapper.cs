@@ -13,8 +13,8 @@ namespace CiaoApp.Web.Mappers
             {
                 Label = transactionAction.GetActionName(),
                 Type = transactionAction.GetActionType(),
-                ButtonClass = DisplayStyle.ButtonClass,
-                GlyphiconName = DisplayStyle.GlyphiconName,
+                ButtonClass = DisplayStyle.Class,
+                GlyphiconName = DisplayStyle.Icon,
                 DisplayPriority = transactionAction.GetDisplayPriority()                    
             };
         }

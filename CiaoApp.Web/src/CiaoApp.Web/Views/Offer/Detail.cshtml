@@ -6,11 +6,45 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_OfferScriptsPartial"); }
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script type="text/javascript">
+        $(function () {
+            $("#promiseSearcher").autocomplete({
+                source: function (request, response) {
+                    var prefix = request.term;
+                    $.ajax({
+                        url: '/api/Offers/SearchOffers',
+                        data: "prefix=" + prefix,
+                        dataType: "json",
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        },
+                        failure: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#targetPromiseId").val(i.item.id);
+                },
+                minLength: 1
+            });
+        });
+    </script>
 }
 
-<form asp-controller="Offer" asp-action="Detail" method="post" class="form-horizontal" role="form">
+<form asp-controller="Offer" asp-action="Edit" method="post" class="form-horizontal" role="form">
     <h4>Offer detail</h4>
     <hr />
+
+    <input type=hidden name="id" value=@Model.Id />
+
     @{ await Html.RenderPartialAsync("_OfferPartial", @Model); }
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">

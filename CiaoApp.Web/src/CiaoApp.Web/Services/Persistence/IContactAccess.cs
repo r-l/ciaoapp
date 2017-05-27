@@ -8,6 +8,8 @@ namespace CiaoApp.Web.Services.Persistence
     {
         IList<Actor> GetUserContacts(int userId);
         IList<Actor> GetUserContacts(int userId, string prefix);
+        IList<Actor> GetAllPeople(int userId);
+        IList<Actor> GetAllPeople(int userId, string prefix);
         Contact CreateNewContact(int userId, int contactId, string nickname);
         ContactGroup CreateNewContactGroup(int userId, string name);
         ContactGroup GetDefaultContactGroup(int userId);

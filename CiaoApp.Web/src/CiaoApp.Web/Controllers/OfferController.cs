@@ -18,17 +18,20 @@ namespace CiaoApp.Web.Controllers
     {
         private readonly IOfferAccess _offerAccess;
         private readonly IContactAccess _contactAccess;
+        private readonly IAssociationAccess _associationAccess;
 
         public OfferController(
             UserManager<ApplicationUser> userManager,
             IOfferAccess dataAccess,
             IActorAccess actorAccess,
             ILoggerFactory loggerFactory,
-            IContactAccess contactAccess)
+            IContactAccess contactAccess,
+            IAssociationAccess associationAccess)
             : base(userManager, loggerFactory, actorAccess)
         {
             _offerAccess = dataAccess;
             _contactAccess = contactAccess;
+            _associationAccess = associationAccess;
         }
 
         //
@@ -79,7 +82,8 @@ namespace CiaoApp.Web.Controllers
                 if (model.TargetType == OfferTargetType.SelectedContactGroup)
                 {
                     newOffer.SelectedContactGroupId = model.TargetContactGroupId;
-                } else if (model.TargetType == OfferTargetType.AllContacts)
+                }
+                else if (model.TargetType == OfferTargetType.AllContacts)
                 {
                     newOffer.SelectedContactGroupId = _contactAccess.GetDefaultContactGroup(user.Actor.Id).Id;
                 }
@@ -89,7 +93,7 @@ namespace CiaoApp.Web.Controllers
             return View(model);
         }
 
-        // GET: /Offer/New
+        // GET: /Offer/Detail
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
@@ -113,7 +117,40 @@ namespace CiaoApp.Web.Controllers
                 return View("Error");
             }
 
-            return View(new OfferViewModel { AllAssociations = new AllAssociationsViewModel { AllAssociations = new List<AssociationViewModel>(), NewAssociation = new NewAssociationViewModel { Context = AssociationContext.Offer } } });
+            return View(offer.MapToOfferView());
+        }
+
+
+        // GET: /Offer/Edit
+        [HttpPost]
+        public async Task<IActionResult> Edit(OfferViewModel model)
+        {            
+
+            if (ModelState.IsValid)
+            {
+                var user = await GetCurrentUserAsync();
+                var newOffer = new Offer { Id = model.Id, Offerer = user.Actor, Product = model.Product, TargetType = model.TargetType };
+                if (model.TargetType == OfferTargetType.SelectedContactGroup)
+                {
+                    newOffer.SelectedContactGroupId = model.TargetContactGroupId;
+                }
+                else if (model.TargetType == OfferTargetType.AllContacts)
+                {
+                    newOffer.SelectedContactGroupId = _contactAccess.GetDefaultContactGroup(user.Actor.Id).Id;
+                }
+                _offerAccess.SaveOffer(newOffer);
+                return RedirectToAction(nameof(OfferController.All), "Offer");
+            }
+            return View(model);
+           
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddNewAssociation(NewAssociationViewModel model)
+        {
+            _associationAccess.AddAssociation(model.CreatingPromiseId, model.TargetPromiseId, model.Type, model.TargetState);
+            return RedirectToAction("Detail", new { id = model.CreatingPromiseId });
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿@model PromiseDetailViewModel
+@using CiaoApp.Web.Extensions.Common;
+@using CiaoApp.Web.Extensions.UI.States;
+
 @{
     ViewData["Title"] = "Detail";
 }
@@ -37,9 +40,8 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
 
-<h4>Details of the Promise @Model.Id</h4>
+<h4>Promise @Model.Id: <span class="label @Model.CurrentStatus.GetDisplayStyle().Class">@Model.CurrentStatus.GetDisplayName()</span></h4>
 <hr />
-<h5>Promise state is @Model.CurrentStatus</h5>
 <div class="form-horizontal">
     <div class="form-group">
 
@@ -125,6 +127,10 @@
 </div>
 <hr />
 
+@await Html.PartialAsync("~/Views/Association/_Associations.cshtml", @Model.AllAssociations)
+
+
+<hr />
 <div class="box direct-chat direct-chat-warning">
     <div class="box-header with-border">
         <h3>Discussion</h3>
@@ -144,10 +150,13 @@
                 @foreach (var message in Model.Messages.OrderByDescending(message => message.CreatedOn))
                 {
 
-                    <div class="direct-chat-msg">
+                    <div class="direct-chat-msg @(message.IsAuthorCurrentUser ? null : "right")">
+                        
                         <div class="direct-chat-info clearfix">
+                            
                             <span class="direct-chat-name @(message.IsAuthorCurrentUser ? "pull-left" : "pull-right")">@message.AuthorName</span>
                             <span class="direct-chat-timestamp @(!message.IsAuthorCurrentUser ? "pull-left" : "pull-right")">@message.CreatedOn</span>
+                            
                         </div>
                         <!-- /.direct-chat-info -->
                         <img class="direct-chat-img" src="~/lib/admin-lte/dist/img/avatar.png" alt="message user image"><!-- /.direct-chat-img -->
@@ -183,4 +192,4 @@
 
 
 
-@await Html.PartialAsync("~/Views/Association/_Associations.cshtml", @Model.AllAssociations)
+

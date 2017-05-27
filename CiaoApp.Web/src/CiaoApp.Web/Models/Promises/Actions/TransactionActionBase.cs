@@ -19,12 +19,14 @@ namespace CiaoApp.Web.Models.Promises.Actions
             return this.GetType().Name;
         }
 
-        public void Execute()
+        public bool Execute()
         {
             if (PromiseIsSet() && IsActorEligible())
             {
                 ActionLogic();
+                return true;
             }
+            return false;
         }
 
         public void RegisterPromise(Promise promise, Actor actor)

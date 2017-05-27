@@ -10,6 +10,7 @@ namespace CiaoApp.Web.Services.Persistence
         IList<Offer> GetAllOffersForActor(Actor offerer, Actor target);
         Offer SaveOffer(Offer offer);
         Offer LoadOfferById(int id);
-        bool IsOfferedToActor(Offer offer, Actor actor);
+        bool IsOfferedToActor(Offer offer, Actor actor, bool allowHidden);
+        IList<Offer> SearchAllActorOffers(Actor actor, string prefix);
     }
 }

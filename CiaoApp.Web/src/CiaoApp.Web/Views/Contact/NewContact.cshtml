@@ -11,9 +11,9 @@
                     var prefix = request.term;
                     $.ajax({
                         url: '/api/People/GetContacts',
-                        data: JSON.stringify(prefix),
+                        data: "prefix=" + prefix,
                         dataType: "json",
-                        type: "POST",
+                        type: "GET",
                         contentType: "application/json; charset=utf-8",
                         success: function (data) {
                             response($.map(data, function (item) {
@@ -46,7 +46,7 @@
     <div class="form-group">
         <label asp-for="IsVirtual" class="col-md-4 control-label"></label>
         <div class="col-md-1">
-            <input asp-for="IsVirtual" class="form-control checkbox" data-toggle="collapse" data-target="#realActor">
+            <input asp-for="IsVirtual" class="checkbox" data-toggle="collapse" data-target="#realActor">
         </div>
     </div>
     <div class="collapse in" id="realActor">

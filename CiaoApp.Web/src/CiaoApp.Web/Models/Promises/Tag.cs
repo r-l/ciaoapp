@@ -1,4 +1,6 @@
-﻿namespace CiaoApp.Web.Models.Promises
+﻿using System.Collections.Generic;
+
+namespace CiaoApp.Web.Models.Promises
 {
     public class Tag : BaseEntity
     {
@@ -7,5 +9,6 @@
         public bool IsForOffer { get; set; }
         public bool IsCustom { get; set; }
         public int? ActorId { get; set; }
+        public virtual ICollection<TagAssociation> AssociatedPromises { get; set; }
     }
 }

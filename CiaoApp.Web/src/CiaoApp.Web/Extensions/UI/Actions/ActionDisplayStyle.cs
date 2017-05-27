@@ -9,35 +9,32 @@ namespace CiaoApp.Web.Extensions.UI.Actions
             switch (transactionAction.GetActionType())
             {
                 case "AcceptAction":
-                    return new DisplayStyle { ButtonClass = "btn-success", GlyphiconName = "glyphicon-thumbs-up" };
+                    return new DisplayStyle { Class = "btn-success", Icon = "glyphicon-thumbs-up" };
                 case "AllowAction":
-                    return new DisplayStyle { ButtonClass = "btn-success", GlyphiconName = "glyphicon-check" };
+                    return new DisplayStyle { Class = "btn-success", Icon = "glyphicon-check" };
                 case "DeclineAction":
-                    return new DisplayStyle { ButtonClass = "btn-danger", GlyphiconName = "glyphicon-remove" };
+                    return new DisplayStyle { Class = "btn-danger", Icon = "glyphicon-remove" };
                 case "PromiseAction":
-                    return new DisplayStyle { ButtonClass = "btn-success", GlyphiconName = "glyphicon-flag" };
+                    return new DisplayStyle { Class = "btn-success", Icon = "glyphicon-flag" };
                 case "QuitAction":
-                    return new DisplayStyle { ButtonClass = "btn-danger", GlyphiconName = "glyphicon-trash" };
+                    return new DisplayStyle { Class = "btn-danger", Icon = "glyphicon-trash" };
                 case "RefuseAction":
-                    return new DisplayStyle { ButtonClass = "btn-danger", GlyphiconName = "glyphicon-ban-circle" };
+                    return new DisplayStyle { Class = "btn-danger", Icon = "glyphicon-ban-circle" };
                 case "RejectAction":
-                    return new DisplayStyle { ButtonClass = "btn-danger", GlyphiconName = "glyphicon-thumbs-down" };
+                    return new DisplayStyle { Class = "btn-danger", Icon = "glyphicon-thumbs-down" };
                 case "RequestAction":
-                    return new DisplayStyle { ButtonClass = "btn-success", GlyphiconName = "glyphicon-envelope" };
-                case "RevokeAcceptAction":
-                    return new DisplayStyle { ButtonClass = "btn-warning", GlyphiconName = "glyphicon-remove-circle" };
-                case "RevokePromiseAction":
-                    return new DisplayStyle { ButtonClass = "btn-warning", GlyphiconName = "glyphicon-remove-circle" };
-                case "RevokeRequestAction":
-                    return new DisplayStyle { ButtonClass = "btn-warning", GlyphiconName = "glyphicon-remove-circle" };
+                    return new DisplayStyle { Class = "btn-success", Icon = "glyphicon-envelope" };
+                case "RevokeAcceptAction":                    
+                case "RevokePromiseAction":                    
+                case "RevokeRequestAction":                    
                 case "RevokeStateAction":
-                    return new DisplayStyle { ButtonClass = "btn-warning", GlyphiconName = "glyphicon-remove-circle" };
+                    return new DisplayStyle { Class = "btn-warning", Icon = "glyphicon-remove-circle" };
                 case "StateAction":
-                    return new DisplayStyle { ButtonClass = "btn-success", GlyphiconName = "glyphicon-ok-sign" };
+                    return new DisplayStyle { Class = "btn-success", Icon = "glyphicon-ok-sign" };
                 case "StopAction":
-                    return new DisplayStyle { ButtonClass = "btn-danger", GlyphiconName = "glyphicon-remove-sign" };
+                    return new DisplayStyle { Class = "btn-danger", Icon = "glyphicon-remove-sign" };
                 default:
-                    return new DisplayStyle { ButtonClass = "btn-info", GlyphiconName = "glyphicon-info-sign" };
+                    return new DisplayStyle { Class = "btn-info", Icon = "glyphicon-info-sign" };
             }
         }
     }

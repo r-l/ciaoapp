@@ -1,0 +1,36 @@
+﻿@model PromiseSimpleViewModel
+@using CiaoApp.Web.Models.Promises
+@using CiaoApp.Web.Extensions.Common;
+@using CiaoApp.Web.Extensions.UI.States;
+
+<li>
+
+    <i class="fa fa-envelope bg-blue"></i>
+
+    <!-- timeline icon -->
+
+    <div class="timeline-item">
+        <span class="time">
+            @if (Model.TermType == TermType.ASAP)
+            {
+                @:ASAP
+            }
+            else
+            {
+                <i class="fa fa-calendar"></i> @Model.TermType   @Model.Term.Value.Date.ToString("dd.MM.yyyy")
+            }
+        </span>
+
+        <h3 class="timeline-header"><a asp-controller="Promise" asp-action="Detail" asp-route-id="@Model.Id">@Model.InitiatorName requested from @Model.ExecutorName:</a></h3>
+
+        <div class="timeline-body">
+            <span class="label @Model.CurrentStatus.GetDisplayStyle().Class">@Model.CurrentStatus.GetDisplayName()</span> @Model.Product
+        </div>
+        <!--
+        <div class="timeline-footer">
+            <a class="btn btn-primary btn-xs">...</a>
+        </div>
+        -->
+    </div>
+
+</li>

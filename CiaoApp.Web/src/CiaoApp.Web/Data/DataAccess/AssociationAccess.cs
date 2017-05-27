@@ -32,10 +32,10 @@ namespace CiaoApp.Web.Data.DataAccess
 
         private BasePromise LoadOfferOrPromise(int id)
         {
-            var offer = _dbContext.Offer.Include(bprm => bprm.ChildAssociations).Include(bprm => bprm.ParentAssociations).FirstOrDefault(bprm => bprm.Id == id);
+            var offer = _dbContext.Offer.Include(bprm => bprm.ChildAssociations).ThenInclude(child => child.Child).Include(bprm => bprm.ParentAssociations).FirstOrDefault(bprm => bprm.Id == id);
             if (offer == null)
             {
-                return _dbContext.Promise.Include(bprm => bprm.ChildAssociations).Include(bprm => bprm.ParentAssociations).FirstOrDefault(bprm => bprm.Id == id);
+                return _dbContext.Promise.Include(bprm => bprm.ChildAssociations).ThenInclude(child => child.Child).Include(bprm => bprm.ParentAssociations).FirstOrDefault(bprm => bprm.Id == id);
             }
             return offer;
         }

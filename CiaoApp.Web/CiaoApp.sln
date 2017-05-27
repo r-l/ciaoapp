@@ -1,16 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{24AE26F3-62AE-49D8-8998-8B08FB1CAED0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A5721224-8BAE-43E7-8D46-55626A93E51F}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CiaoApp.Web", "src\CiaoApp.Web\CiaoApp.Web.xproj", "{A49F3449-106D-4198-A1BC-70B1CE1C6574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CiaoApp.Web", "src\CiaoApp.Web\CiaoApp.Web.csproj", "{A49F3449-106D-4198-A1BC-70B1CE1C6574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,13 +27,9 @@ Global
 		{A49F3449-106D-4198-A1BC-70B1CE1C6574} = {24AE26F3-62AE-49D8-8998-8B08FB1CAED0}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 1
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://ciaoapp.visualstudio.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = src\\CiaoApp.Web\\CiaoApp.Web.xproj
-		SccProjectTopLevelParentUniqueName1 = CiaoApp.Web.sln
-		SccProjectName1 = src/CiaoApp.Web
-		SccLocalPath1 = src\\CiaoApp.Web
 	EndGlobalSection
 EndGlobal

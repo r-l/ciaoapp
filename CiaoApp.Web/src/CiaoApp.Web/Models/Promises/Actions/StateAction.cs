@@ -14,7 +14,7 @@
 
         public override bool IsActorEligible()
         {
-            return CheckEligibility(TransactionStatus.Promised, ActorRole.Executor);
+            return (CheckEligibility(TransactionStatus.Promised, ActorRole.Executor) || CheckEligibility(TransactionStatus.Rejected, ActorRole.Executor));
         }
 
         protected override void ActionLogic()

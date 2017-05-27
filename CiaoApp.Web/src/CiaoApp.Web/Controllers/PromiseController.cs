@@ -11,12 +11,13 @@ using CiaoApp.Web.Models;
 using CiaoApp.Web.Services.Persistence;
 using CiaoApp.Web.Mappers;
 using CiaoApp.Web.ViewModels.Associations;
+using CiaoApp.Web.Models.Promises.Associations;
 
 namespace CiaoApp.Web.Controllers
 {
     [Authorize]
     public class PromiseController : BaseController
-    {        
+    {
         private readonly IPromiseAccess _promiseAccess;
         private readonly IMessageAccess _messageAccess;
         private readonly IOfferAccess _offerAccess;
@@ -33,7 +34,7 @@ namespace CiaoApp.Web.Controllers
             ILoggerFactory loggerFactory)
             : base(userManager, loggerFactory, actorAccess)
         {
-            _promiseAccess = dataAccess;            
+            _promiseAccess = dataAccess;
             _offerAccess = offerAccess;
             _messageAccess = messageAccess;
             _associationAccess = associationAccess;
@@ -74,7 +75,7 @@ namespace CiaoApp.Web.Controllers
             {
                 return BadRequest();
             }
-            if (_offerAccess.IsOfferedToActor(offer, user.Actor))
+            if (_offerAccess.IsOfferedToActor(offer, user.Actor, false))
             {
                 return View("New", new NewRequestViewModel { Executor = offer.Offerer.GetFullName(), ExecutorId = offer.Offerer.Id, Product = offer.Product, OriginalOfferId = id });
             }
@@ -109,6 +110,10 @@ namespace CiaoApp.Web.Controllers
                     States = new List<PromiseState> { state }
                 };
                 _promiseAccess.SavePromise(promise);
+                if (model.OriginalOfferId > 0)
+                {
+                    _associationAccess.AddAssociation(model.OriginalOfferId.GetValueOrDefault(), promise.Id, AssociationType.IsOriginOf, null);
+                }
                 _logger.LogInformation("New request was created by " + user.Actor.GetFullName() + " to " + executor.GetFullName() + ". Id of the promise is " + promise.Id.ToString());
                 return RedirectToAction(nameof(PromiseController.All), "Promise");
 
@@ -165,7 +170,7 @@ namespace CiaoApp.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddNewAssociation([FromForm]NewAssociationViewModel model)
+        public IActionResult AddNewAssociation(NewAssociationViewModel model)
         {
             _associationAccess.AddAssociation(model.CreatingPromiseId, model.TargetPromiseId, model.Type, model.TargetState);
             return RedirectToAction("Detail", new { id = model.CreatingPromiseId });
@@ -195,9 +200,37 @@ namespace CiaoApp.Web.Controllers
                 return BadRequest();
             }
 
-            action.Execute();
-            _promiseAccess.SavePromise(promise);
+            if (action.Execute())
+            {
+                _promiseAccess.SavePromise(promise);
+                var originId = promise.GetOriginId();
+                if (originId != null)
+                {
+                    var idsForCreation = _offerAccess.LoadOfferById(originId.GetValueOrDefault()).GetCreatedPromisesForState(promise.GetCurrentState().Status);
+                    foreach (var id in idsForCreation)
+                    {
+                        var offer = _offerAccess.LoadOfferById(id);
+                        if (_offerAccess.IsOfferedToActor(offer, promise.Initiator, true))
+                        {
+                            var state = new PromiseState { Status = TransactionStatus.Requested, Attained = System.DateTime.Now };
+                            var createdPromise = new Promise
+                            {
+                                Initiator = promise.Executor,
+                                Executor = promise.Initiator,
+                                Product = offer.Product,
+                                Term = promise.Term,
+                                TermType = promise.TermType,
+                                States = new List<PromiseState> { state }
+                            };
+                            _promiseAccess.SavePromise(createdPromise);                            
+                            _associationAccess.AddAssociation(offer.Id, createdPromise.Id, AssociationType.IsOriginOf, null);                          
+
+                        }
+                    }
+                    
+                }
+            }            
             return RedirectToAction(nameof(PromiseController.All), "Promise");
-        }       
+        }
     }
 }

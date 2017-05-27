@@ -29,7 +29,7 @@ namespace CiaoApp.Web.Mappers
                 TargetType = offer.TargetType,
                 TargetContactGroupId = offer.SelectedContactGroupId,
                 TargetContactGroupName = offer.SelectedContactGroup == null ? "" : offer.SelectedContactGroup.Name,
-                AllAssociations = new AllAssociationsViewModel { AllAssociations = associations, NewAssociation = new NewAssociationViewModel { CreatingPromiseId = offer.Id, Context = AssociationContext.Offer } }
+                AllAssociations = new AllAssociationsViewModel { AllAssociations = associations, NewAssociation = new NewAssociationViewModel(AssociationContext.Offer) { CreatingPromiseId = offer.Id, Context = AssociationContext.Offer } }
             };
         }
     }

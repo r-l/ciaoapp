@@ -10,6 +10,7 @@ namespace CiaoApp.Web.Mappers
             return new ContactSimpleViewModel
             {
                 Id = contact.Id,
+                ActorId = contact.ActorId,
                 Nickname = contact.Nickname,
                 IsVirtual = contact.Actor.IsVirtual
             };

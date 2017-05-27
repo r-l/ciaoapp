@@ -15,7 +15,8 @@
         public override bool IsActorEligible()
         {
             return ((CheckEligibility(TransactionStatus.Stated, ActorRole.Executor))
-                || (CheckEligibility(TransactionStatus.Promised, ActorRole.Executor)));
+                || (CheckEligibility(TransactionStatus.Promised, ActorRole.Executor))
+                || (CheckEligibility(TransactionStatus.Accepted, ActorRole.Executor)));
         }
 
         protected override void ActionLogic()
